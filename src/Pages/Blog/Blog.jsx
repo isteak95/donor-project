@@ -1,5 +1,5 @@
 
-const LogIn = () => {
+const Blog = () => {
     return (
         <div>
             
@@ -7,4 +7,4 @@ const LogIn = () => {
     );
 };
 
-export default LogIn;
+export default Blog;
