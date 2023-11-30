@@ -20,6 +20,9 @@ import AdminDashboard from "../Pages/AdminDashboard/AdminDashboard";
 import BloodDonation from "../Pages/BloodDonation/BloodDonation";
 import DonatinDetials from "../Pages/DonatinDetials/DonatinDetials";
 import Blog from "../Pages/Blog/Blog";
+import PrivateRoute from "../PryvateRoute/PryvateRoute";
+
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -47,7 +50,7 @@ import Blog from "../Pages/Blog/Blog";
         },
         {
           path : "/donationdetails",
-          element : <DonatinDetials></DonatinDetials>
+          element : <PrivateRoute><DonatinDetials></DonatinDetials></PrivateRoute>
         },
         {
           path : "/blog",
@@ -58,7 +61,7 @@ import Blog from "../Pages/Blog/Blog";
     },
     {
         path : "/dashboard",
-        element : <Dashboard></Dashboard>,
+        element : <PrivateRoute><Dashboard></Dashboard></PrivateRoute> ,
         children: [
             {
                 path : "/dashboard",

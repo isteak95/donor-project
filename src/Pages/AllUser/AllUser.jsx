@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 const AllUser = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'blocked'
+  const [statusFilter, setStatusFilter] = useState('all');
 
 
   useEffect(() => {
@@ -41,64 +42,66 @@ const AllUser = () => {
     }
   };
 
-  const handleBlock = (userId) => {
-    // Implement blocking logic and update the user status
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user._id === userId ? { ...user, status: 'blocked' } : user
-      )
-    );
-  };
-
-  const handleUnblock = (userId) => {
-    // Implement unblocking logic and update the user status
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user._id === userId ? { ...user, status: 'active' } : user
-      )
-    );
-  };
-
-  const handleMakeVolunteer = (user) => {
-    axios.patch(`http://localhost:5000/users/volunteer/${user}`)
+  const handleBlock = (users) => {
+    axios.patch(`http://localhost:5000/users/block/${users._id}`)
     .then(res => {
       console.log(res.data);
       if (res.data.modifiedCount > 0) {
         refech();
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: `${user.name} is an Admin Now!`,
-          showConfirmButton: false,
-          timer: 1500
-        });
+        toast.success('volunteer successful!');
+
       }
     })
     .catch(error => {
-      console.error('Error making user admin:', error);
+      console.error('Error making user a volunteer:', error);
     });
   };
 
-  const handleMakeAdmin = (user) => {
-    axios.patch(`http://localhost:5000/users/admin/${user._id}`)
+  const handleUnblock = (users) => {
+    axios.patch(`http://localhost:5000/users/unblock/${users._id}`)
+    .then(res => {
+      console.log(res.data);
+      if (res.data.modifiedCount > 0) {
+        refech();
+        toast.success('volunteer successful!');
+
+      }
+    })
+    .catch(error => {
+      console.error('Error making user a volunteer:', error);
+    });
+  };
+
+  const handleMakeVolunteer = (users) => {
+    // Implement logic to make user a volunteer
+    axios.patch(`http://localhost:5000/users/volunteer/${users._id}`)
       .then(res => {
         console.log(res.data);
         if (res.data.modifiedCount > 0) {
           refech();
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: `${user.name} is an Admin Now!`,
-            showConfirmButton: false,
-            timer: 1500
-          });
+          toast.success('volunteer successful!');
+
+        }
+      })
+      .catch(error => {
+        console.error('Error making user a volunteer:', error);
+      });
+  };
+  
+  const handleMakeAdmin = (users) => {
+    axios.patch(`http://localhost:5000/users/admin/${users._id}`)
+      .then(res => {
+        console.log(res.data);
+        if (res.data.modifiedCount > 0) {
+          refech();
+          toast.success('Admin successful!');
+
         }
       })
       .catch(error => {
         console.error('Error making user admin:', error);
       });
   };
-  console.log(filteredUsers)
 
   return (
     <div className='lg:mx-10 my-10 '>
@@ -112,7 +115,7 @@ const AllUser = () => {
         >
           <option value="all">All</option>
           <option value="active">Active</option>
-          <option value="blocked">Blocked</option>
+          <option value="block">Blocked</option>
         </select>
       </div>
 
@@ -142,17 +145,17 @@ const AllUser = () => {
               <td>
                 <div className='my-2 '>
                   {user.status === 'active' ? (
-                    <button className='btn btn-error text-white ' onClick={() => handleBlock(user._id)}>
+                    <button className='btn btn-error text-white ' onClick={() => handleBlock(user)}>
                       Block User
                     </button>
                   ) : (
-                    <button className='btn btn-error text-white ' onClick={() => handleUnblock(user._id)}>
+                    <button className='btn btn-error text-white ' onClick={() => handleUnblock(user)}>
                       Unblock User
                     </button>
                   )}
                 </div>
                 <div className='my-2 '>
-                  <button className='btn btn-success text-white mr-3 ' onClick={() => handleMakeVolunteer(user._id)}>
+                  <button className='btn btn-success text-white mr-3 ' onClick={() => handleMakeVolunteer(user)}>
                     Make Volunteer
                   </button>
                   <button className='btn btn-accent  ' onClick={() => handleMakeAdmin(user)}>
@@ -164,6 +167,8 @@ const AllUser = () => {
           ))}
         </tbody>
       </table>
+      <ToastContainer position="top-right" />
+
     </div>
   );
 };

@@ -1,9 +1,44 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useContext } from 'react';
+import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 const Dashboard = () => {
-    const isAdmin = true;
-    const isDonor = false;
-    const isVolunteer = false;
+  const [donorData, setDonorData] = useState({});
+  const { user, loading } = useContext(AuthContext);
+  useEffect(() => {
+    // Example: Fetch additional data based on the user when not loading
+    if (!loading && user && user.email) {
+      // Perform additional logic or data fetching here
+      console.log('User data:', user);
+    }
+  }, [user, loading]);
+  useEffect(() => {
+    const fetchDonorData = async () => {
+      try {
+        if (user && user.email) {
+          const response = await axios.get(`http://localhost:5000/user?email=${user.email}`);
+          const donorDataArray = response.data;
+          console.log(response.data);
+          console.log('Donor Data:', donorDataArray);
+          if (donorDataArray.length > 0) {
+            setDonorData(donorDataArray[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching donor data:', error);
+      }
+    };
+
+    fetchDonorData();
+  }, [user]);
+
+  const isAdmin = donorData.role === 'admin';
+  const isVolunteer = donorData.role === 'volunteer';
+  const isDonor = !isAdmin && !isVolunteer;
+
+    
 
     return (
         <div>
@@ -40,6 +75,9 @@ const Dashboard = () => {
                                 <li className="my-5 text-xl font-medium text-white">
                                     <NavLink to="/dashboard/content-management">Content Management</NavLink>
                                 </li>
+                                <li className="my-40 text-xl font-medium text-white">
+                                    <NavLink to="/"> Back Home page !</NavLink>
+                                </li>
                             </>
                         )}
                         {!isAdmin && isDonor && (
@@ -58,6 +96,9 @@ const Dashboard = () => {
                                 <li className="my- text-xl font-medium text-white">
                                     <NavLink to="/dashboard/create-donation-request">Create Donation Request</NavLink>
                                 </li>
+                                <li className="my-40 text-xl font-medium text-white">
+                                    <NavLink to="/">Back Home page !</NavLink>
+                                </li>
                             </>
                         )}
                         {!isAdmin && !isDonor && isVolunteer && (
@@ -75,6 +116,9 @@ const Dashboard = () => {
                                 </li>
                                 <li className=" text-xl font-medium text-white">
                                     <NavLink to="/dashboard/content-management">Content Management</NavLink>
+                                </li>
+                                <li className="my-40 text-xl font-medium text-white">
+                                    <NavLink to="/">Back Home page !</NavLink>
                                 </li>
                             </>
                         )}

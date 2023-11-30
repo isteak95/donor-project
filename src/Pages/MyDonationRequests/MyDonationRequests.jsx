@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useContext } from 'react';
+import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 const MyDonationRequests = () => {
   const [donationRequests, setDonationRequests] = useState([]);
@@ -7,10 +9,21 @@ const MyDonationRequests = () => {
   const [statusFilter, setStatusFilter] = useState('all'); // Default filter: all
   const [currentPage, setCurrentPage] = useState(1);
   const [requestsPerPage] = useState(5); // Adjust the number of requests per page
+  const { user, loading } = useContext(AuthContext);
+
+
+
 
   useEffect(() => {
+    // Example: Fetch additional data based on the user when not loading
+    if (!loading && user && user.email) {
+      // Perform additional logic or data fetching here
+      console.log('User data:', user);
+    }
+  }, [user, loading]);
+  useEffect(() => {
     // Fetch donation requests from the backend (replace the URL with your actual endpoint)
-    axios.get('http://localhost:5000/donor/create-donation-request')
+    axios.get(`http://localhost:5000/donor/create-donation-request?email=${user.email}`)
       .then((response) => {
         setDonationRequests(response.data);
         setFilteredRequests(response.data);

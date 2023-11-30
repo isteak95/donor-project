@@ -38,9 +38,9 @@ const BloodDonation = () => {
     <div className='my-40 mx-10'>
       <h2 className="text-3xl font-bold text-center my-10">Pending Donation Requests</h2>
       {/* Display donation requests in card or tabular view */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1   md:grid-cols-3 gap-8">
         {donationRequests.map((request) => (
-          <div key={request.id} className="bg-white p-6 rounded-lg shadow-md">
+          <div key={request.id} className=" bg-gray-300 p-6 rounded-lg shadow-md">
             <div className="flex items-center mb-4">
               <span className="text-4xl mr-2 ">🩸</span>
               <h3 className="text-xl font-semibold">Requester: {request.recipientname}</h3>

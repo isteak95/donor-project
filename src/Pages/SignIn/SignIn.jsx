@@ -4,6 +4,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
+import { Navigate } from "react-router-dom";
 
 const SignIn = () => {
   const { signIn } = useContext(AuthContext);
@@ -43,6 +44,8 @@ const SignIn = () => {
       toast.success("Sign-In successful with email and password!");
       e.target.email.value = "";
       e.target.password.value = "";
+      <Navigate to="/"></Navigate>
+
     } catch (error) {
       if (error.code === "auth/invalid-email" || error.code === "auth/user-not-found") {
         setEmailError("Email doesn't match.");

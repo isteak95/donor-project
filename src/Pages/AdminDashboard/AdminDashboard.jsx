@@ -6,7 +6,6 @@ import { AuthContext } from '../../AuthProvider/AuthProvider';
 const AdminDashboard = () => {
 
     const [donorData, setDonorData] = useState([]);
-    const [recentDonationRequests, setRecentDonationRequests] = useState([]);
     const { user, loading } = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [donationRequests, setDonationRequests] = useState([]);
@@ -17,6 +16,18 @@ const AdminDashboard = () => {
             console.log('User data:', user);
         }
     }, [user, loading]);
+    useEffect(() => {
+        const fetchUsers = async () => {
+          try {
+            const response = await axios.get('http://localhost:5000/all-user');
+            setUsers(response.data);
+          } catch (error) {
+            console.error('Error fetching users:', error);
+          }
+        };
+    
+        fetchUsers();
+      }, []);
 
     useEffect(() => {
         const fetchDonorData = async () => {
@@ -39,27 +50,7 @@ const AdminDashboard = () => {
         fetchDonorData();
     }, [user]);
 
-    useEffect(() => {
-        axios.get('http://localhost:5000/donor/create-donation-request')
-            .then((response) => {
-                setRecentDonationRequests(response.data);
-            })
-            .catch((error) => {
-                console.error('Error fetching recent donation requests:', error);
-            });
-    }, []);
-    useEffect(() => {
-        const fetchUsers = async () => {
-          try {
-            const response = await axios.get('http://localhost:5000/all-user');
-            setUsers(response.data);
-          } catch (error) {
-            console.error('Error fetching users:', error);
-          }
-        };
-    
-        fetchUsers();
-      }, []);
+
       useEffect(() => {
         // Fetch all blood donation requests from the backend (replace the URL with your actual endpoint)
         axios.get('http://localhost:5000/all-blood-donation-request')
@@ -72,7 +63,7 @@ const AdminDashboard = () => {
       }, []);
     
 
-    const showViewAllButton = recentDonationRequests.length > 3;
+    const showViewAllButton = donationRequests.length > 3;
 
     const handleDeleteClick = (donationRequestId) => {
         // Handle delete click, show confirmation modal
@@ -103,7 +94,7 @@ const AdminDashboard = () => {
                         <h2 className='text-center my-10 text-3xl font-bold'>
                             Welcome {donor.name || 'Guest'} !
                         </h2>
-                        {recentDonationRequests.length > 0 && (
+                        {donationRequests.length > 0 && (
                             <div className='lg:mx-10 my-10 overflow-x-auto'>
                                 <table className="table">
                                     <thead>
@@ -118,7 +109,7 @@ const AdminDashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-base-300 rounded-xl">
-                                        {recentDonationRequests.slice(0, 3).map((request) => (
+                                        {donationRequests.slice(0, 3).map((request) => (
                                             <tr key={request._id}>
                                                 <td>{request.recipientname}</td>
                                                 <td>{`${request.district}, ${request.upazila}`}</td>

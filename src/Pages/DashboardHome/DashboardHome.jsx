@@ -36,7 +36,7 @@ const DashboardHome = () => {
   }, [user]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/donor/create-donation-request')
+    axios.get('http://localhost:5000/donor/donation-request')
       .then((response) => {
         setRecentDonationRequests(response.data);
       })

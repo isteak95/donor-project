@@ -24,7 +24,7 @@ const PrivateRoute = ({ children }) => {
     return children;
   } else {
     // User is not authenticated, redirect to the login page
-    return <Navigate to="/signin" />;
+    return<Navigate to="/signin" />;
   }
 };
 
